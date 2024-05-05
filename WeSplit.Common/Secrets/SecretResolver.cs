@@ -7,7 +7,7 @@ namespace WeSplit.Common.Secrets
     {
         private SourcesHandler _sourcesHandler;
 
-        [FromFile("telegram.token")]
+        [FromFile("D:/secrets/wesplit.telegram.token")]
         public string TelegramApiKey { get; private set; }
 
         public SecretResolver()

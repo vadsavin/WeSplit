@@ -1,3 +1,6 @@
+using WeSplit.Common.Secrets;
+using WeSplit.Telegram;
+
 namespace WeSplit
 {
     public class Program
@@ -8,6 +11,14 @@ namespace WeSplit
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+
+            builder.Services.AddLogging(c =>
+            {
+                c.AddConsole();
+            });
+
+            builder.Services.AddSingleton<ISecretResolver, SecretResolver>();
+            builder.Services.AddHostedService<TelegramService>();
 
             var app = builder.Build();
 
