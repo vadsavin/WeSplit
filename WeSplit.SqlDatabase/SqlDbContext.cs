@@ -19,7 +19,7 @@ namespace WeSplit.SqlDatabase
 
         public DbSet<Identity> Identities { get; set; }
 
-        public DbSet<Authentication> Authentications { get; set; }
+        public DbSet<AuthenticationGarant> AuthenticationGarants { get; set; }
 
         public SqlDbContext() : base()
         {

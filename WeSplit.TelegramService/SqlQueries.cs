@@ -1,4 +1,5 @@
-﻿using Telegram.Bot.Types;
+﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Telegram.Bot.Types;
 using WeSplit.Common.Entities.Org;
 using WeSplit.SqlDatabase;
 using DatabaseUser = WeSplit.Common.Entities.Org.User;
@@ -7,19 +8,28 @@ namespace WeSplit.Telegram
 {
     public static class SqlQueries
     {
-        public static Task<Guid> CreateAuthenticateRequest(Update update)
+        public static async Task<Guid> CreateAuthenticationGarant(Update update)
         {
             using var dbContext = new SqlDbContext();
+
+            var existingGarant = dbContext.AuthenticationGarants.FirstOrDefault(g => g.User.TelegramId == update.Message!.Chat.Id);
+
+            if (existingGarant != null)
+            {
+                existingGarant.CreatedAt = DateTime.UtcNow;
+                await dbContext.SaveChangesAsync();
+                return existingGarant.Id;
+            }
 
             var guid = new Guid();
 
             var authIdentity = new Identity()
             {
                 Guid = guid,
-                Type = IdentityType.AuthenticationToken,
+                Type = IdentityType.AuthenticationGarant,
             };
 
-            var authenticaton = new Authentication()
+            var authenticaton = new AuthenticationGarant()
             {
                 Id = guid,
                 CreatedAt = DateTime.UtcNow,
@@ -27,7 +37,7 @@ namespace WeSplit.Telegram
             };
 
             dbContext.Identities.Add(authIdentity);
-            dbContext.Authentications.Add(authenticaton);
+            dbContext.AuthenticationGarants.Add(authenticaton);
 
             var user = dbContext.Users.FirstOrDefault(u => u.TelegramId == update.Message!.Chat.Id);
 
@@ -39,7 +49,7 @@ namespace WeSplit.Telegram
                 {
                     Id = userGuid,
                     TelegramId = update.Message!.Chat.Id,
-                    Name = update.Message!.Chat.FirstName,
+                    Name = update.Message!.Chat.FirstName ?? update.Message!.Chat.Id.ToString(),
                     CreateAt = DateTime.UtcNow,
                 };
 
@@ -54,11 +64,11 @@ namespace WeSplit.Telegram
             }
             else
             {
-                throw new NotImplementedException("Implement user reauth");
+                // what to do if user is already auhenticated?
             }
 
             dbContext.SaveChanges();
-            return Task.FromResult(guid);
+            return guid;
         }
     }
 }

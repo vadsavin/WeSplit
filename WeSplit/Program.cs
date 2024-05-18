@@ -21,7 +21,7 @@ namespace WeSplit
             builder.Services.AddHostedService<TelegramService>();
 
             var app = builder.Build();
-
+            app.MapControllers();
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -36,7 +36,7 @@ namespace WeSplit
             app.UseRouting();
 
             app.UseAuthorization();
-
+            
             app.MapRazorPages();
 
             app.Run();

@@ -19,9 +19,13 @@ namespace WeSplit.Common.Entities.Org
 
         public DateTime CreateAt { get; set; }
 
+        public string? AuthentificatonToken { get; set; }
+
+        public DateTime? AuthentificatonLastUpdated { get; set; }
+
         public virtual ICollection<RecipientItem> RecipientItems { get; set; } = new List<RecipientItem>();
         public virtual ICollection<Recipient> Recipients { get; set; } = new List<Recipient>();
         public virtual ICollection<Session> Sessions { get; set; } = new List<Session>();
-        public virtual ICollection<Authentication> Authentications { get; set; } = new List<Authentication>();
+        public virtual ICollection<AuthenticationGarant> AuthenticationGarant { get; set; } = new List<AuthenticationGarant>();
     }
 }

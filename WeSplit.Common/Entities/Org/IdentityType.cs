@@ -9,6 +9,6 @@
         User,
         Currency,
         AuthenticateRequest,
-        AuthenticationToken,
+        AuthenticationGarant,
     }
 }
